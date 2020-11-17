@@ -11,13 +11,17 @@ ITEMS_PICKLE = './data/items.pickle'
 UNCOMPRESSED_EMBEDDINGS_PATH = './data/embeddings/word2vec-uncompressed'
 EMBEDDINGS_PATH = './data/embeddings/word2vec.bin'
 
+def _normalize(item_title):
+    return item_title.upper().strip().replace('.', '').replace('_', '').replace('?', '')
+
 def vectorize_items(items_dict):
+    documents_to_item = [x for x in items_dict.keys()]
     documents = [
-        items_dict[x]['title'] for x in items_dict.keys()
+        _normalize(items_dict[x]['title']) for x in items_dict.keys()
     ]
     vectorizer = TfidfVectorizer(stop_words=['spanish', 'portuguese'], strip_accents='unicode')
     X = vectorizer.fit_transform(documents)
-    return vectorizer, X
+    return vectorizer, X.astype(np.float32), documents_to_item
 
 def load_interactions_df():
     return pd.read_csv(INTERACTIONS_PATH)
