@@ -33,6 +33,7 @@ train_search_queries = get_search_queries(interactions_train)
 test_search_queries = get_search_queries(interactions_test)
 search_queries = list(set(test_search_queries + train_search_queries))
 sorted_search_queries = sorted(search_queries)
+search_queries_length = len(sorted_search_queries)
 
 print('Starting...')
 
@@ -48,7 +49,7 @@ def process(interval):
     start, end = interval
     indexed_results = {}
     print(f'Started processing range [{start}-{end}]....')
-    for i in range(start, end):
+    for i in range(start, min(search_queries_length, end)):
         q = sorted_search_queries[i]
         indexed_results[q] = process_search(q)
     print(f'Saving pickle [{start}-{end}] with {len(indexed_results)} elements...')
